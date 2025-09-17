@@ -16,7 +16,7 @@ export default function InnerLoginComponent({
         <ErrorMessage
           name="phone"
           component="div"
-          className="text-red-400 text-sm mt-1 mr-1"
+          className="text-red-600 text-xs mr-1"
         />
       </div>
       <button

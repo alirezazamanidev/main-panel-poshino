@@ -77,7 +77,7 @@ const LoginForm = withFormik<LoginFormProps, LoginFormValues>({
       const response = await CallApi().post('/auth/send-otp', {
         phone: values.phone,
       });
-      if (response?.status === 201) {
+      if (response?.status === 200) {
         // Update phone in parent component
         props.setPhone(values.phone);
         props.router.push('/verify-otp');

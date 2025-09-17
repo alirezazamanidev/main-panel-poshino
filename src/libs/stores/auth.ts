@@ -1,5 +1,5 @@
-import { create } from "zustand";
-import { devtools, persist } from "zustand/middleware";
+import { create } from 'zustand';
+import { devtools, persist } from 'zustand/middleware';
 
 interface AuthState {
   phone: string | null;
@@ -23,9 +23,16 @@ export const useAuthStore = create<AuthState>()(
         ...initialState,
 
         setPhone: (phone: string) =>
-          set((state) => ({ ...state, phone }), false, "setPhone"),
+          set((state) => ({ ...state, phone }), false, 'setPhone'),
 
-        setToken: (token: string) =>
+        setToken: (token: string) => {
+          // Set token in cookie for server-side access
+          if (typeof window !== 'undefined') {
+            document.cookie = `auth-token=${token}; path=/; max-age=${
+              7 * 24 * 60 * 60
+            }; SameSite=lax`;
+          }
+
           set(
             (state) => ({
               ...state,
@@ -33,20 +40,29 @@ export const useAuthStore = create<AuthState>()(
               isAuthenticated: true,
             }),
             false,
-            "setToken"
-          ),
+            'setToken',
+          );
+        },
 
-        logout: () => set(initialState, false, "logout"),
+        logout: () => {
+          // Remove token from cookie
+          if (typeof window !== 'undefined') {
+            document.cookie =
+              'auth-token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
+          }
+
+          set(initialState, false, 'logout');
+        },
       }),
       {
-        name: "auth-storage",
+        name: 'auth-storage',
         // فقط این فیلدها در localStorage ذخیره می‌شوند
         partialize: (state) => ({
           token: state.token,
           phone: state.phone,
           isAuthenticated: state.isAuthenticated,
         }),
-      }
-    )
-  )
+      },
+    ),
+  ),
 );
