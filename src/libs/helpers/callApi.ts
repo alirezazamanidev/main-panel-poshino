@@ -43,4 +43,6 @@ export const CallApi = () => {
       
     },
   );
+
+  return axiosInstance;
 };

@@ -4,8 +4,8 @@ import './globals.css';
 import { Toaster } from 'react-hot-toast';
 
 export const metadata: Metadata = {
-  title: 'پوشینو',
-  description: 'پوشینو انلاین شاپ پوشاک',
+  title: 'poshino',
+  description: 'poshino online shop'
 };
 const vazir = Vazirmatn({ subsets: ['arabic'] });
 
@@ -16,14 +16,8 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="fa" dir="rtl">
-      <head>
-        <link
-          href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css"
-          rel="stylesheet"
-          type="text/css"
-        />
-      </head>
-      <body className={`${vazir.className} antialiased font-[Vazirmatn]`}>
+   
+      <body >
         <Toaster
           position="top-center"
           reverseOrder={false}
