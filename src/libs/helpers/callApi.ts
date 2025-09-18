@@ -1,4 +1,4 @@
-import axios, { AxiosError } from 'axios';
+import axios, { AxiosError, AxiosRequestConfig } from 'axios';
 import {
   BadRequestException,
   ForbiddenException,
@@ -26,7 +26,36 @@ export const CallApi = () => {
 
   axiosInstance.interceptors.response.use(
     (response) => response,
-    (err: AxiosError) => {
+    async (err: AxiosError) => {
+      const originalRequest = err.config as AxiosRequestConfig & {
+        _retry?: boolean;
+      };
+  
+     
+      // اگر خطای 401 بود و قبلاً تلاش برای رفرش نشده بود و روت مربوط به auth نباشد
+      if (
+        err.response?.status === 401 && 
+        !originalRequest._retry && 
+        originalRequest.url?.includes('/auth/check-login')
+      ) {
+        originalRequest._retry = true;
+        try {
+          console.log("refresh");
+  
+           await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/auth/refresh`, {
+            withCredentials: true,
+          });
+  
+          return axiosInstance(originalRequest);
+        } catch (refreshError) {
+          throw new UnauthorizedException(
+           refreshError instanceof Error ? refreshError.message : "خطایی رخ داده است"
+          );
+        }
+      }
+
+
+
       if (err.response) {
         const { status, data } = err.response;
         const errorMessage =
